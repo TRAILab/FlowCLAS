@@ -2,6 +2,111 @@ body {
   font-family: 'Noto Sans', sans-serif;
 }
 
+.abstract-card {
+  margin-top: -0.5rem;
+  padding: 2rem 2.25rem;
+  border: 1px solid rgba(54, 54, 54, 0.08);
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(250, 248, 244, 0.98));
+  box-shadow: 0 16px 40px rgba(10, 10, 10, 0.05);
+}
+
+.availability-note {
+  margin-top: 1rem;
+  color: #5f6368;
+  font-size: 0.95rem;
+}
+
+.section-heading {
+  margin-bottom: 2rem;
+}
+
+.section-lede {
+  max-width: 760px;
+  margin: 0.75rem auto 0;
+  color: #4a4a4a;
+  line-height: 1.7;
+}
+
+.results-section {
+  padding-top: 1rem;
+}
+
+.results-grid,
+.insight-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.results-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.insight-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.result-card,
+.insight-card {
+  height: 100%;
+  padding: 1.5rem;
+  border-radius: 18px;
+  border: 1px solid rgba(54, 54, 54, 0.08);
+  background: #fff;
+  box-shadow: 0 14px 34px rgba(10, 10, 10, 0.05);
+}
+
+.result-card-eyebrow {
+  margin-bottom: 0.6rem;
+  color: #ff9f1c;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.result-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+
+.metric-chip {
+  min-width: 120px;
+  padding: 0.85rem 1rem;
+  border-radius: 14px;
+  background: #f6f7f8;
+}
+
+.metric-label {
+  display: block;
+  color: #6b7280;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.metric-value {
+  display: block;
+  margin-top: 0.2rem;
+  color: #111827;
+  font-size: 1.55rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.result-card-text,
+.insight-card p {
+  color: #4a4a4a;
+  line-height: 1.7;
+}
+
+.why-section {
+  padding-top: 1rem;
+}
+
 
 .footer .icon-link {
     font-size: 25px;
@@ -145,6 +250,28 @@ body {
 }
 
 @media screen and (max-width: 768px) {
+  .abstract-card {
+    padding: 1.5rem;
+  }
+
+  .results-grid,
+  .insight-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .result-card,
+  .insight-card {
+    padding: 1.25rem;
+  }
+
+  .result-metrics {
+    flex-direction: column;
+  }
+
+  .metric-chip {
+    width: 100%;
+  }
+
   .visualization-section {
     padding-top: 1rem;
   }
