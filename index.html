@@ -24,19 +24,14 @@
 
   <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
 
-  <link rel="stylesheet" href="./static/css/bulma.min.css">
-  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
-  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
-  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="./static/css/bulma.min.css?v=20260305">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
-  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="stylesheet" href="./static/css/index.css?v=20260305">
   <link rel="icon" href="./static/images/TRAIL_BLACK_ICON.png">
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script defer src="./static/js/fontawesome.all.min.js"></script>
-  <script src="./static/js/bulma-carousel.min.js"></script>
-  <script src="./static/js/bulma-slider.min.js"></script>
-  <script src="./static/js/index.js"></script>
+  <script src="./static/js/index.js?v=20260305"></script>
 </head>
 
 <body>
@@ -54,6 +49,7 @@
             <h1 class="title is-1 publication-title">
               FlowCLAS: Enhancing Normalizing Flow-Based Anomaly Segmentation Via Contrastive Learning
             </h1>
+            <div class="is-size-3 publication-venue">WACV 2026</div>
             <div class="is-size-5 publication-authors">
               <span class="author-block">
                 <a href="https://johncwlee.github.io/">Chang Won Lee</a><sup>1</sup>,</span>
@@ -118,6 +114,120 @@
               </div>
 
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">🌟 Key Features</h2>
+          <div class="content has-text-justified">
+            <ul>
+              <li>
+                <strong>Hybrid objective for normalizing flows.</strong>
+                We introduce FlowCLAS, a framework that combines maximum-likelihood training with an outlier-aware contrastive objective, encouraging a more separable latent space for robust anomaly segmentation in dynamic scenes.
+              </li>
+
+              <li>
+                <strong>Contrastive learning is the key ingredient.</strong>
+                Ablations show that contrastive learning outperforms other outlier-based training strategies for normalizing flows and is critical for learning object-level semantic features rather than low-level patterns.
+              </li>
+
+              <li>
+                <strong>Strong performance across multiple domains.</strong>
+                FlowCLAS delivers strong results on both road anomaly segmentation benchmarks for autonomous driving (Fishyscapes
+                Lost & Found, Road Anomaly, SegmentMeIfYouCan-ObstacleTrack) and the ALLO benchmark for space anomaly segmentation, showing that the approach transfers well across very different robotics settings.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="hero teaser">
+    <div class="container is-max-desktop">
+      <div class="hero-body">
+        <div class="has-text-centered">
+          <h2 class="title is-3" style="margin-bottom: 1em;">🧠 Method Overview</h2>
+        </div>
+        <div class="has-text-centered" style="margin-top: 1em;">
+          <img src="./static/images/flowclas_overview.png" style="width: 80%;" alt="FlowCLAS diagram">
+        </div>
+        <h2 class="subtitle" style="text-align: justify;">
+          <strong>FlowCLAS Overview.</strong> The framework operates in two stages. During training, a frozen vision
+          encoder <i>f</i><sub>&phi;</sub> extracts features from a mixed-content image <i>x</i><sup>mix</sup> and an
+          auxiliary outlier image <i>x</i><sup>out</sup>. A normalizing flow network <i>f</i><sub>&theta;</sub> then
+          maps these features to a latent space, producing <i>z</i><sup>{mix,out}</sup>. The model is optimized via a
+          hybrid objective: (1) a maximum likelihood loss (<i>L</i><sub>ml</sub>) pushes the latent samples <i>z</i>
+          corresponding to normal regions toward a base Multivariate Gaussian distribution, and (2) a contrastive loss
+          (<i>L</i><sub>con</sub>) enforces a separation between the latent representations of normal and anomalous
+          features in the projection space. During inference, the normalizing flow computes a likelihood-based anomaly
+          score map for a given test image, localizing regions that deviate from the learned distribution of normal
+          data.
+        </h2>
+      </div>
+    </div>
+  </section>
+
+  <section class="section visualization-section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column">
+          <div class="has-text-centered visualization-header">
+            <h2 class="title is-3">🖼️ Visualizations</h2>
+          </div>
+
+          <div class="visualization-group">
+            <h3 class="title is-5 visualization-group-title">Space anomaly segmentation</h3>
+
+            <figure class="visualization-figure">
+              <img
+                class="visualization-image"
+                src="./static/images/allo_1.png"
+                alt="ALLO test set, sample 1">
+              <figcaption class="visualization-caption">
+                <strong>ALLO</strong> test set, sample 1.
+              </figcaption>
+            </figure>
+
+            <figure class="visualization-figure">
+              <img
+                class="visualization-image"
+                src="./static/images/allo_2.png"
+                alt="ALLO test set, sample 2">
+              <figcaption class="visualization-caption">
+                <strong>ALLO</strong> test set, sample 2.
+              </figcaption>
+            </figure>
+          </div>
+
+          <div class="visualization-group">
+            <h3 class="title is-5 visualization-group-title">Road anomaly segmentation</h3>
+
+            <figure class="visualization-figure">
+              <img
+                class="visualization-image"
+                src="./static/images/fishyscapes.png"
+                alt="Road anomaly segmentation from the Fishyscapes Lost and Found dataset">
+              <figcaption class="visualization-caption">
+                <strong>Fishyscapes Lost &amp; Found</strong> validation set.
+              </figcaption>
+            </figure>
+
+            <figure class="visualization-figure">
+              <img
+                class="visualization-image"
+                src="./static/images/roadanomaly.png"
+                alt="Road anomaly segmentation from the Road Anomaly dataset">
+              <figcaption class="visualization-caption">
+                <strong>Road Anomaly</strong> validation set.
+              </figcaption>
+            </figure>
           </div>
         </div>
       </div>
