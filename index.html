@@ -61,6 +61,9 @@
                 Chris Langley<sup>2</sup>,</span>
               <span class="author-block">
                 Svetlana Stolpner<sup>2</sup>,</span>
+            </div>
+
+            <div class="is-size-5 publication-authors">
               <span class="author-block">
                 <a href="https://starslab.ca/people/prof-jonathan-kelly/">Jonathan Kelly</a><sup>1</sup>,</span>
               <span class="author-block">
@@ -103,22 +106,42 @@
                 </span>
                 <!-- Code Link. -->
                 <span class="link-block">
-                  <a href="https://github.com/TRAILab/FlowCLAS"
+                  <!-- TODO: Add code (https://github.com/TRAILab/FlowCLAS)-->
+                  <a href=""
                     class="external-link button is-normal is-rounded is-dark">
                     <span class="icon">
                       <i class="fab fa-github"></i>
                     </span>
-                    <span>Code</span>
+                    <span>Code coming soon</span>
                   </a>
                 </span>
               </div>
-
+              <p class="availability-note">
+                Code is not public yet. The GitHub repository will be updated here once the release is ready.
+              </p>
             </div>
           </div>
         </div>
       </div>
     </div>
   </section>
+
+  <!--section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column is-four-fifths">
+          <div class="content abstract-card">
+            <h2 class="title is-3 has-text-centered">Abstract</h2>
+            <p>
+              Anomaly segmentation is an essential capability for safety-critical robotics applications that must be aware of unexpected events. Normalizing flows (NFs), a class of generative models, are a promising approach for this task due to their ability to model the inlier data distribution efficiently. However, their performance falters in dynamic scenes, where complex, multi-modal data distributions cause them to struggle with identifying out-of-distribution samples, leaving a performance gap to leading discriminative methods.
+              To address this limitation, we introduce FlowCLAS, a hybrid framework that enhances the traditional maximum likelihood objective of NFs with a discriminative, contrastive loss. Leveraging Outlier Exposure, this objective explicitly enforces a separation between normal and anomalous features in the latent space, retaining the probabilistic foundation of NFs while embedding the discriminative power they lack.
+              The strength of this approach is demonstrated by FlowCLAS establishing new state-of-the-art (SOTA) performance across multiple challenging anomaly segmentation benchmarks for robotics, including Fishyscapes Lost \& Found, Road Anomaly, SegmentMeIfYouCan-ObstacleTrack, and ALLO. Our experiments also show that this contrastive approach is more effective than other outlier-based training strategies for NFs, successfully bridging the performance gap to leading discriminative methods.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section-->
 
   <section class="section">
     <div class="container is-max-desktop">
@@ -174,6 +197,135 @@
     </div>
   </section>
 
+  <section class="section results-section">
+    <div class="container is-max-desktop">
+      <div class="has-text-centered section-heading">
+        <h2 class="title is-3">📊 Results at a Glance</h2>
+        <p class="section-lede">
+          FlowCLAS establishes new state-of-the-art on multiple road and space anomaly segmentation benchmarks while
+          remaining competitive on the most challenging SMIYC split.
+        </p>
+      </div>
+
+      <div class="results-grid">
+        <article class="result-card">
+          <p class="result-card-eyebrow">Road anomaly segmentation</p>
+          <h3 class="title is-5">Fishyscapes Lost &amp; Found</h3>
+          <div class="result-metrics">
+            <div class="metric-chip">
+              <span class="metric-label">AUPRC</span>
+              <span class="metric-value">88.8</span>
+            </div>
+            <div class="metric-chip">
+              <span class="metric-label">FPR95</span>
+              <span class="metric-value">0.7</span>
+            </div>
+          </div>
+          <p class="result-card-text">
+            Best overall result on FS-L&amp;F, improving AUPRC by 3.2 points and reducing FPR95 by 0.6 relative to the
+            strongest prior method reported in the paper.
+          </p>
+        </article>
+
+        <article class="result-card">
+          <p class="result-card-eyebrow">Road anomaly segmentation</p>
+          <h3 class="title is-5">Road Anomaly</h3>
+          <div class="result-metrics">
+            <div class="metric-chip">
+              <span class="metric-label">AUPRC</span>
+              <span class="metric-value">93.0</span>
+            </div>
+            <div class="metric-chip">
+              <span class="metric-label">FPR95</span>
+              <span class="metric-value">3.3</span>
+            </div>
+          </div>
+          <p class="result-card-text">
+            Sets a new best AUPRC and improves FPR95 by 2.0 points over the previous strongest baseline on Road
+            Anomaly.
+          </p>
+        </article>
+
+        <article class="result-card">
+          <p class="result-card-eyebrow">SegmentMeIfYouCan benchmark</p>
+          <h3 class="title is-5">SegmentMeIfYouCan ObstacleTrack</h3>
+          <div class="result-metrics">
+            <div class="metric-chip">
+              <span class="metric-label">AUPRC</span>
+              <span class="metric-value">94.2</span>
+            </div>
+            <div class="metric-chip">
+              <span class="metric-label">FPR95</span>
+              <span class="metric-value">0.1</span>
+            </div>
+          </div>
+          <p class="result-card-text">
+            Achieves the best ObstacleTrack result. On the harder AnomalyTrack split, FlowCLAS reaches 94.3 AUPRC and
+            remains competitive with the top entry.
+          </p>
+        </article>
+
+        <article class="result-card">
+          <p class="result-card-eyebrow">Space anomaly segmentation</p>
+          <h3 class="title is-5">ALLO</h3>
+          <div class="result-metrics">
+            <div class="metric-chip">
+              <span class="metric-label">AUPRC</span>
+              <span class="metric-value">88.4</span>
+            </div>
+            <div class="metric-chip">
+              <span class="metric-label">FPR95</span>
+              <span class="metric-value">6.6</span>
+            </div>
+          </div>
+          <p class="result-card-text">
+            Delivers a 7.6-point AUPRC gain over the previous best result on ALLO while keeping false positives
+            competitive in this more difficult low-light orbital setting.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section why-section">
+    <div class="container is-max-desktop">
+      <div class="has-text-centered section-heading">
+        <h2 class="title is-3">Why It Works</h2>
+        <p class="section-lede">
+          The paper's ablations show that contrastive learning is the decisive ingredient rather than a minor training
+          detail.
+        </p>
+      </div>
+
+      <div class="insight-grid">
+        <article class="insight-card">
+          <h3 class="title is-5">Contrastive learning beats other OE strategies</h3>
+          <p>
+            Outlier exposure helps, but the strongest results come from enforcing latent-space separation with a
+            contrastive loss instead of relying only on segmentation-style supervision or outlier likelihood
+            minimization.
+          </p>
+        </article>
+
+        <article class="insight-card">
+          <h3 class="title is-5">The objective transfers to existing NF models</h3>
+          <p>
+            On ALLO, adding the FlowCLAS contrastive objective improves FastFlow from 29.1 to 40.8 AUPRC and UFlow
+            from 20.7 to 48.7 AUPRC, showing the framework is a reusable upgrade rather than a one-off architecture.
+          </p>
+        </article>
+
+        <article class="insight-card">
+          <h3 class="title is-5">Strong features help, but they are not enough alone</h3>
+          <p>
+            Better pre-trained encoders improve the ceiling, yet the paper shows that rich features still need the
+            contrastive objective to avoid low-level shortcuts and achieve reliable object-level anomaly separation.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
   <section class="section visualization-section">
     <div class="container is-max-desktop">
       <div class="columns is-centered">
@@ -191,7 +343,8 @@
                 src="./static/images/allo_1.png"
                 alt="ALLO test set, sample 1">
               <figcaption class="visualization-caption">
-                <strong>ALLO</strong> test set, sample 1.
+                <strong>ALLO</strong> qualitative result on a held-out orbital scene. The visualization highlights
+                FlowCLAS's ability to localize an anomalous object while preserving the surrounding ISS structure.
               </figcaption>
             </figure>
 
@@ -201,7 +354,8 @@
                 src="./static/images/allo_2.png"
                 alt="ALLO test set, sample 2">
               <figcaption class="visualization-caption">
-                <strong>ALLO</strong> test set, sample 2.
+                <strong>ALLO</strong> qualitative result under a second viewpoint and lighting condition, illustrating
+                the method's transfer to dynamic space robotics imagery.
               </figcaption>
             </figure>
           </div>
@@ -215,7 +369,8 @@
                 src="./static/images/fishyscapes.png"
                 alt="Road anomaly segmentation from the Fishyscapes Lost and Found dataset">
               <figcaption class="visualization-caption">
-                <strong>Fishyscapes Lost &amp; Found</strong> validation set.
+                <strong>Fishyscapes Lost &amp; Found</strong> validation example showing dense anomaly localization in a
+                cluttered road scene with small hazardous objects.
               </figcaption>
             </figure>
 
@@ -225,7 +380,8 @@
                 src="./static/images/roadanomaly.png"
                 alt="Road anomaly segmentation from the Road Anomaly dataset">
               <figcaption class="visualization-caption">
-                <strong>Road Anomaly</strong> validation set.
+                <strong>Road Anomaly</strong> validation example illustrating object-level segmentation in a diverse
+                urban scene with strong appearance variation.
               </figcaption>
             </figure>
           </div>
