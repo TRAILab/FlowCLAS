@@ -6,6 +6,7 @@ experiment:
   logger: [wandb, csv]
   name: flowclas
   offline: false
+  project_name: flowclas_Cityscapes
   wandb_id: null
 
 task: segmentation
@@ -75,7 +76,7 @@ model:
   class_path: core.models.FlowCLAS
   init_args:
     backbone: rein_dinov2
-    backbone_ckpt: ../misc/weights/rein_dinov2l_city.pth
+    backbone_ckpt: ../weights/rein_dinov2l_city.pth
     layers: [0, 1, 2, 3]
     proj_dim: 128
     num_classes: 20

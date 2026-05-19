@@ -6,6 +6,7 @@ experiment:
   logger: [wandb, csv]  # comet | tensorboard | wandb | csv (combinable)
   name: flowclas
   offline: false
+  project_name: flowclas_ALLO
   wandb_id: null
 
 task: segmentation
@@ -85,7 +86,7 @@ model:
   class_path: core.models.FlowCLAS
   init_args:
     backbone: rein_dinov2
-    backbone_ckpt: ../misc/weights/rein-allo/iter_40000.pth
+    backbone_ckpt: ../weights/rein_dinov2l_allo.pth
     proj_dim: 128
     flow_steps: 16
     use_gaussian: false
