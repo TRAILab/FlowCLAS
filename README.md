@@ -203,3 +203,17 @@ python3 trainer_cli.py test \
   --trainer.precision 32 \
   --ckpt ../weights/flowclas/best_cityscapes.ckpt
 ```
+
+## Citation
+
+If you use FlowCLAS in your research, please cite:
+
+```bibtex
+@inproceedings{lee2026flowclas,
+  title={FlowCLAS: Enhancing Normalizing Flow-Based Anomaly Segmentation Via Contrastive Learning},
+  author={Lee, Chang Won and Leveugle, Selina and Grouchy, Paul and Langley, Chris and Stolpner, Svetlana and Kelly, Jonathan and Waslander, Steven L},
+  booktitle={Proceedings of the IEEE/CVF Winter Conference on Applications of Computer Vision},
+  pages={6998--7007},
+  year={2026}
+}
+```
