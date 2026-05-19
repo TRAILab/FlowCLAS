@@ -2,6 +2,11 @@
 
 Official repository for FlowCLAS.
 
+[![arXiv](https://img.shields.io/badge/arXiv-2411.19888-b31b1b.svg?logo=arxiv&logoColor=white)](https://arxiv.org/abs/2411.19888)
+[![Paper](https://img.shields.io/badge/Paper-WACV_2026-4b6fa1?logo=googledocs&logoColor=white)](https://openaccess.thecvf.com/content/WACV2026/papers/Lee_FlowCLAS_Enhancing_Normalizing_Flow-Based_Anomaly_Segmentation_Via_Contrastive_Learning_WACV_2026_paper.pdf)
+[![Website](https://img.shields.io/badge/Website-FlowCLAS-0a9396?logo=googlechrome&logoColor=white)](https://trailab.github.io/FlowCLAS/)
+[![Video](https://img.shields.io/badge/Video-YouTube-FF0000?logo=youtube&logoColor=white)](https://youtu.be/CUTDzFNhzaY)
+
 All commands below assume the working directory is `src/` (where `trainer_cli.py` lives).
 
 ## Environment setup
