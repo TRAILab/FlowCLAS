@@ -1,0 +1,4 @@
+# Keep CUDA 12.8 wheels; `pip install -r requirements.txt` must not upgrade torch.
+torch==2.7.1
+torchvision==0.22.1
+xformers==0.0.31.post1

@@ -1,0 +1,87 @@
+[project]
+name = "flowclas"
+version = "0.1.0"
+requires-python = ">=3.10,<3.11"
+dependencies = [
+    # PyTorch — sourced from pytorch-cu128 index below (pins mirror docker/constraints-pytorch.txt)
+    "torch==2.7.1",
+    "torchvision==0.22.1",
+    "xformers==0.0.31.post1",
+
+    # OpenMMLab — mmcv built from source (no build isolation)
+    # Set MMCV_WITH_OPS=1 before running `uv sync`
+    "mmcv==2.1.0",
+    "mmdet==3.3.0",
+    "mmsegmentation==1.2.2",
+
+    # Git-only deps — sourced from [tool.uv.sources] below
+    "sam2",
+    "FrEIA",
+    "imaug",
+    "dinov2",
+    "detectron2",
+    "clip",
+    "cityscapesscripts",
+    "anomalib",
+
+    # PyPI deps
+    "av>=10.0.0",
+    "einops>=0.3.2",
+    "numpy==2.1.2",
+    "opencv-python>=4.10.0.84,<4.12",
+    "pandas>=1.1.0",
+    "open-clip-torch>=2.23.0",
+    "timm>=0.5.4",
+    "lightning==2.5.5",
+    "wandb",
+    "jsonargparse[signatures]==4.35.0",
+    "kornia",
+    "scikit-learn",
+    "albumentations==1.4.3",
+    "torchmetrics>=1.5.1",
+    "notebook",
+    "transformers==4.57.1",
+    "normflows",
+    "yacs",
+    "matplotlib<3.10.0",
+    "h5py",
+    "easydict",
+    "setuptools<70",
+
+    # RAPIDS — sourced from nvidia-pypi index below (PyPI cuda-toolkit aligned with CUDA 12.8 image)
+    "cuda-toolkit>=12.8,<12.9",
+    "cuml-cu12==25.*",
+]
+
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
+
+[[tool.uv.index]]
+name = "nvidia-pypi"
+url = "https://pypi.nvidia.com"
+explicit = true
+
+[tool.uv.sources]
+torch        = { index = "pytorch-cu128" }
+torchvision  = { index = "pytorch-cu128" }
+xformers     = { index = "pytorch-cu128" }
+cuml-cu12    = { index = "nvidia-pypi" }
+mmcv         = { git = "https://github.com/open-mmlab/mmcv.git", tag = "v2.1.0" }
+sam2         = { git = "https://github.com/facebookresearch/sam2.git", rev = "2b90b9f5ceec907a1c18123530e92e794ad901a4" }
+FrEIA        = { git = "https://github.com/vislearn/FrEIA.git", rev = "421249652c478b3f240f124f69eb5777b6a76bf2" }
+imaug        = { git = "https://github.com/imaug/imaug.git", rev = "73d23e45a638f0add75230ca2dc49b7f4d51524a" }
+dinov2       = { git = "https://github.com/joonielee832/dinov2.git" }
+detectron2   = { git = "https://github.com/facebookresearch/detectron2.git" }
+clip         = { git = "https://github.com/openai/CLIP.git" }
+cityscapesscripts = { git = "https://github.com/mcordts/cityscapesScripts.git" }
+anomalib     = { git = "https://github.com/openvinotoolkit/anomalib.git", rev = "9293df3578129ecb06e0043ebc362af9e7fedaaa" }
+
+[tool.uv]
+# mmcv needs torch/ninja in env before its own build (no-build-isolation matches Dockerfile)
+# detectron2 also requires torch pre-installed
+# imaug: legacy setup.py needs `pkg_resources` (Docker installs setuptools<70 in same env as pip -r)
+no-build-isolation-package = ["mmcv", "detectron2", "imaug"]
+# Pin mmcv so mmdet/mmseg don't pull an incompatible version (mirrors --no-deps in Dockerfile)
+override-dependencies = ["mmcv==2.1.0"]

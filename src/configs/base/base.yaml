@@ -1,0 +1,64 @@
+# Shared training defaults (metrics, logging, trainer, checkpoint monitor).
+# Pair with a datamodule (--data) and a flowclas/*.yaml experiment config.
+
+# --- Metrics ---
+metrics:
+  image:
+    - class_path: BinaryAUROC
+      init_args:
+        thresholds: 1000
+  pixel:
+    - class_path: BinaryAUROC
+      init_args:
+        thresholds: 5000
+        ignore_index: 255
+    - class_path: BinaryAP
+      init_args:
+        thresholds: 5000
+        ignore_index: 255
+    - class_path: RecallAt05
+      init_args:
+        thresholds: 5000
+        ignore_index: 255
+    - class_path: RecallAt01
+      init_args:
+        thresholds: 5000
+        ignore_index: 255
+    - class_path: FPR95
+      init_args:
+        thresholds: 5000
+        ignore_index: 255
+  threshold:
+    class_path: F1Threshold  # alternatives: IoUThreshold
+    init_args:
+      thresholds: 1000
+      ignore_index: 255
+      # compute_on_cpu: true
+
+# --- Experiment logging ---
+experiment:
+  project_name: FlowCLAS
+  log_graph: false
+  time_delta: 120  # seconds; reuse latest/ run dir if younger than this (DDP)
+
+# --- PyTorch Lightning trainer ---
+trainer:
+  enable_progress_bar: true
+  enable_checkpointing: true
+  sync_batchnorm: true
+  log_every_n_steps: 20
+  devices: 1
+  strategy: ddp  # auto when devices == 1
+  max_epochs: 50
+  limit_train_batches: 1.0
+  limit_val_batches: 1.0
+  limit_test_batches: 1.0
+  limit_predict_batches: 1.0
+  precision: bf16-mixed  # recommended on A100 / RTX 4090
+  check_val_every_n_epoch: 1  # null to disable epoch-based val
+  val_check_interval: 1.0  # fraction of epoch, or int step count
+
+# --- Checkpoint selection (primary) ---
+monitor1:
+  metric: p_FPR95
+  mode: min

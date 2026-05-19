@@ -1,0 +1,134 @@
+# FlowCLAS experiment: ALLO + COCO (540×960 training crops)
+# Usage: --data configs/base/allo_coco.yaml -c configs/base/base.yaml -c configs/flowclas/flowclas_allo.yaml
+
+# --- Experiment ---
+experiment:
+  logger: [wandb, csv]  # comet | tensorboard | wandb | csv (combinable)
+  name: flowclas
+  offline: false
+  wandb_id: null
+
+task: segmentation
+
+# --- Data (overrides datamodule defaults) ---
+data:
+  divisor: 14
+  train_batch_size: 64
+  eval_batch_size: 8
+  ignore_coco_bg: true
+
+  allo_train_transform:
+    class_path: albumentations.Compose
+    init_args:
+      transforms:
+        - class_path: HorizontalFlip
+          init_args:
+            p: 0.5
+        - class_path: VerticalFlip
+          init_args:
+            p: 0.5
+        - class_path: RandomCrop
+          init_args:
+            height: 540
+            width: 960
+            p: 1.0
+
+  coco_train_mix_transform:
+    class_path: albumentations.Compose
+    init_args:
+      transforms:
+        - class_path: ToGray
+          init_args:
+            p: 0.5
+        - class_path: RandomScaleV2
+          init_args:
+            scale_factors: [.1, .125, .25, .5, .5, .75]
+            interpolation: 3  # cv2.INTER_CUBIC
+            p: 1.0
+        - class_path: PadIfNeeded
+          init_args:
+            min_height: 540
+            min_width: 960
+            border_mode: 0  # cv2.BORDER_CONSTANT
+            value: 0.0
+            mask_value: 255
+            always_apply: true
+        - class_path: CenterCrop
+          init_args:
+            height: 540
+            width: 960
+            always_apply: true
+
+  coco_train_ood_transform:
+    class_path: albumentations.Compose
+    init_args:
+      transforms:
+        - class_path: ToGray
+          init_args:
+            p: 0.5
+        - class_path: PadIfNeeded
+          init_args:
+            min_height: 540
+            min_width: 960
+            border_mode: 0
+            value: 0.0
+            mask_value: 255
+            always_apply: true
+        - class_path: CenterCrop
+          init_args:
+            height: 540
+            width: 960
+            always_apply: true
+
+# --- Model ---
+model:
+  class_path: core.models.FlowCLAS
+  init_args:
+    backbone: rein_dinov2
+    backbone_ckpt: ../misc/weights/rein-allo/iter_40000.pth
+    proj_dim: 128
+    flow_steps: 16
+    use_gaussian: false
+    ood_index: 254
+    ignore_index: 255
+    alpha: 1e-6
+    temperature: 0.10
+    use_logp_score: false
+    use_sam: true
+    no_ood: false
+    subnet_type: residual
+    load_strict: false
+
+# --- Optimization ---
+optimizer:
+  class_path: torch.optim.AdamW
+  init_args:
+    lr: 1e-5
+    weight_decay: 1e-5
+
+lr_scheduler:
+  class_path: LinearWarmupCosineAnnealingLR
+  init_args:
+    max_lr: 1e-5
+
+# --- Visualization ---
+visualization:
+  save: false
+  total: 10
+  features_only: false
+
+# --- Checkpoint monitors ---
+monitor1:
+  metric:
+    - p_FPR95
+  mode: min
+
+monitor2:
+  metric:
+    - p_BinaryAP
+  mode: max
+
+# --- Trainer overrides ---
+trainer:
+  max_epochs: 50
+  # strategy: ddp_find_unused_parameters_true

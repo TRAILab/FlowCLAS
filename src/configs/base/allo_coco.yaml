@@ -1,0 +1,37 @@
+# Datamodule: ALLO in-distribution + COCO OOD paste (core.data.ALLOCOCO)
+# Usage: --data configs/base/allo_coco.yaml -c configs/base/base.yaml -c configs/flowclas/flowclas_allo.yaml
+
+class_path: core.data.ALLOCOCO
+init_args:
+  # Dataset roots
+  allo_root: ../data/blender/full
+  train_dir: train_v3
+  test_dir: test_v3
+  coco_root: ../data/coco
+
+  # Train / val / test split
+  test_split_mode: FROM_DIR
+  val_split_mode: FROM_TEST
+  val_split_ratio: 0.3  # fraction of test set held out for validation
+
+  # Dataloaders
+  num_workers: 8
+  train_batch_size: 8
+  eval_batch_size: 8
+  inference_batch_size: 8
+
+  # Spatial / normalization (overridden by flowclas/*.yaml when set)
+  image_size: null
+  divisor: null
+  normalization: ALLO
+  different_normalization: false
+
+  # Padding
+  pad_value: 0.0
+  mask_pad_value: 255
+  eval_transform: null
+
+  # Mask semantics: binary ID vs OOD when true; full semantic classes when false
+  norm_mask_train: true
+  norm_mask_test: true
+  ignore_coco_bg: true

@@ -1,0 +1,35 @@
+--extra-index-url https://pypi.nvidia.com
+--extra-index-url https://download.pytorch.org/whl/cu128
+av>=10.0.0
+einops>=0.3.2
+numpy==2.1.2
+opencv-python>=4.10.0.84,<4.12
+git+https://github.com/vislearn/FrEIA.git@421249652c478b3f240f124f69eb5777b6a76bf2
+git+https://github.com/imaug/imaug.git@73d23e45a638f0add75230ca2dc49b7f4d51524a
+pandas>=1.1.0
+open-clip-torch>=2.23.0
+timm>=0.5.4
+lightning==2.5.5
+wandb
+jsonargparse[signatures]==4.35.0
+kornia
+scikit-learn
+albumentations==1.4.3
+torchmetrics>=1.5.1
+notebook
+git+https://github.com/joonielee832/dinov2.git
+transformers==4.57.1
+xformers==0.0.31.post1
+setuptools<70
+normflows
+yacs
+# PyPI metapackage (libs/NVRTC for RAPIDS): match image CUDA 12.8.x, never 12.9+ or 13.x
+cuda-toolkit>=12.8,<12.9
+cuml-cu12==25.*
+matplotlib<3.10.0
+git+https://github.com/facebookresearch/detectron2.git
+git+https://github.com/openai/CLIP.git
+h5py
+git+https://github.com/mcordts/cityscapesScripts.git
+easydict
+git+https://github.com/openvinotoolkit/anomalib.git@9293df3578129ecb06e0043ebc362af9e7fedaaa

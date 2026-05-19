@@ -1,0 +1,166 @@
+# FlowCLAS experiment: Cityscapes + COCO (512×1024 training crops)
+# Usage: --data configs/base/cityscapes_coco.yaml -c configs/base/base.yaml -c configs/flowclas/flowclas_city.yaml
+
+# --- Experiment ---
+experiment:
+  logger: [wandb, csv]
+  name: flowclas
+  offline: false
+  wandb_id: null
+
+task: segmentation
+
+# --- Data ---
+data:
+  divisor: 14
+  train_batch_size: 16
+  eval_batch_size: 8
+
+  city_train_transform:
+    class_path: albumentations.Compose
+    init_args:
+      transforms:
+        - class_path: HorizontalFlip
+          init_args:
+            p: 0.5
+        - class_path: RandomCrop
+          init_args:
+            height: 512
+            width: 1024
+            p: 1.0
+
+  coco_train_mix_transform:
+    class_path: albumentations.Compose
+    init_args:
+      transforms:
+        - class_path: RandomScaleV2
+          init_args:
+            scale_factors: [.1, .125, .25, .5, .5, .75]
+            interpolation: 3
+            p: 1.0
+        - class_path: PadIfNeeded
+          init_args:
+            min_height: 512
+            min_width: 1024
+            border_mode: 0
+            value: 0.0
+            mask_value: 255
+            always_apply: true
+        - class_path: CenterCrop
+          init_args:
+            height: 512
+            width: 1024
+            always_apply: true
+
+  coco_train_ood_transform:
+    class_path: albumentations.Compose
+    init_args:
+      transforms:
+        - class_path: PadIfNeeded
+          init_args:
+            min_height: 512
+            min_width: 1024
+            border_mode: 0
+            value: 0.0
+            mask_value: 255
+            always_apply: true
+        - class_path: CenterCrop
+          init_args:
+            height: 512
+            width: 1024
+            always_apply: true
+
+# --- Model ---
+model:
+  class_path: core.models.FlowCLAS
+  init_args:
+    backbone: rein_dinov2
+    backbone_ckpt: ../misc/weights/rein_dinov2l_city.pth
+    layers: [0, 1, 2, 3]
+    proj_dim: 128
+    num_classes: 20
+    flow_steps: 16
+    use_gaussian: false
+    ood_index: 254
+    ignore_index: 255
+    alpha: 1e-6
+    temperature: 0.13
+    use_logp_score: false
+    use_sam: true
+    no_ood: false
+    subnet_type: residual
+    load_strict: false
+    use_seg: true
+    slide_inf_cfg:
+      enable: false
+
+# --- Metrics (overrides base; full-resolution thresholds) ---
+metrics:
+  image: []
+  pixel:
+    - class_path: BinaryAUROC
+      init_args:
+        thresholds: null
+        ignore_index: 255
+    - class_path: BinaryAP
+      init_args:
+        thresholds: null
+        ignore_index: 255
+    - class_path: RecallAt05
+      init_args:
+        thresholds: null
+        ignore_index: 255
+    - class_path: RecallAt01
+      init_args:
+        thresholds: null
+        ignore_index: 255
+    - class_path: FPR95
+      init_args:
+        thresholds: null
+        ignore_index: 255
+    - class_path: ECEMetric
+      init_args:
+        ignore_index: 255
+    - class_path: MCEMetric
+      init_args:
+        ignore_index: 255
+
+# --- Optimization ---
+optimizer:
+  class_path: torch.optim.AdamW
+  init_args:
+    lr: 1e-6
+    weight_decay: 1e-5
+
+lr_scheduler:
+  class_path: LinearWarmupCosineAnnealingLR
+  init_args:
+    max_lr: 1e-6
+
+# --- Visualization ---
+visualization:
+  save: true
+  total: 10
+  features_only: false
+
+# --- Checkpoint monitors (per OOD benchmark) ---
+monitor1:
+  metric:
+    - p_FPR95-Fishy
+    - p_FPR95-RoadAnomaly
+    # - p_FPR95-AnomalyTrack
+    # - p_FPR95-ObstacleTrack
+  mode: min
+
+monitor2:
+  metric:
+    - p_BinaryAP-Fishy
+    - p_BinaryAP-RoadAnomaly
+    # - p_BinaryAP-AnomalyTrack
+    # - p_BinaryAP-ObstacleTrack
+  mode: max
+
+# --- Trainer overrides ---
+trainer:
+  max_epochs: 600
+  # strategy: ddp_find_unused_parameters_true

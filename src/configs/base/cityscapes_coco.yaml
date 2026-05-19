@@ -1,0 +1,24 @@
+# Datamodule: Cityscapes train + COCO OOD; Fishyscapes / SMIYC / RoadAnomaly test (core.data.CityscapesCOCO)
+# Usage: --data configs/base/cityscapes_coco.yaml -c configs/base/base.yaml -c configs/flowclas/flowclas_city.yaml
+
+class_path: core.data.CityscapesCOCO
+init_args:
+  # Dataset roots
+  city_root: ../data/cityscapes
+  coco_root: ../data/coco
+  fishy_root: ../data/fishyscapes/LostAndFound
+  smiyc_root: ../data/smiyc
+  roadanomaly_root: ../data/RoadAnomaly
+
+  # Dataloaders
+  num_workers: 8
+  train_batch_size: 4
+  eval_batch_size: 8
+  inference_batch_size: 8
+
+  # Padding
+  pad_value: 0.0
+  mask_pad_value: 255
+
+  # Bias OOD sampling toward road-relevant COCO classes
+  biased: false
