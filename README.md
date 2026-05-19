@@ -50,17 +50,126 @@ The image is tagged `flowclas`. To start an interactive container with project d
 bash scripts/docker_run.bash /path/to/your/datasets
 ```
 
+Paths in the YAML configs below are relative to `src/` (for example, `../data/cityscapes` → `~/data/cityscapes` inside the container).
+
+## Dataset preparation
+
+### Cityscapes
+
+1. Register and download the **gtFine** split (and matching **leftImg8bit** images) from the [Cityscapes dataset](https://www.cityscapes-dataset.com/).
+2. **(Recommended)** Preprocess labels to the common **19-class** `trainId` convention using [cityscapesScripts](https://github.com/mcordts/cityscapesScripts) — install the package, then run [`createTrainIdLabelImgs.py`](https://github.com/mcordts/cityscapesScripts/blob/master/cityscapesscripts/preparation/createTrainIdLabelImgs.py) on your download. FlowCLAS remaps raw `labelIds` to 19 training classes in code; generating `*_gtFine_labelTrainIds.png` keeps your tree aligned with the standard Cityscapes tooling.
+3. Set `city_root` in [`src/configs/base/cityscapes_coco.yaml`](src/configs/base/cityscapes_coco.yaml) to the dataset root that contains `leftImg8bit/` and `gtFine/` (Torchvision layout).
+
+Expected layout:
+
+```text
+cityscapes/
+├── leftImg8bit/
+│   ├── train/<city>/*.png
+│   └── val/<city>/*.png
+└── gtFine/
+    ├── train/<city>/*_gtFine_labelIds.png
+    └── val/<city>/*_gtFine_labelIds.png
+```
+
+### ALLO
+
+A new version of the ALLO dataset will be released soon. For the current benchmark, set `allo_root`, `train_dir`, and `test_dir` in [`src/configs/base/allo_coco.yaml`](src/configs/base/allo_coco.yaml).
+
+### COCO (outlier exposure)
+
+COCO images are used as an OoD proxy during training (paste/mix with in-distribution scenes). You can either prepare them yourself or use the preprocessed archive on [Google Drive](https://drive.google.com/drive/folders/1snL0FNDnmvEEdFQozC2fjsES3Iamms_n?usp=sharing) (same folder as Fishyscapes and Road Anomaly).
+
+**Option A — prepare from scratch** ([Meta-OoD](https://github.com/robin-chan/meta-ood)):
+
+1. Download [COCO 2017 train](https://cocodataset.org/#download) images and instance annotations.
+2. Run [`preparation/prepare_coco_segmentation.py`](https://github.com/robin-chan/meta-ood/blob/master/preparation/prepare_coco_segmentation.py) to build binary `ood_seg` masks for images without instances that overlap Cityscapes train classes.
+
+**Option B — download preprocessed data** from the [Google Drive](https://drive.google.com/drive/folders/1snL0FNDnmvEEdFQozC2fjsES3Iamms_n?usp=sharing) folder and extract under your `coco_root`.
+
+In both cases, set `coco_root` in the data config you use ([`cityscapes_coco.yaml`](src/configs/base/cityscapes_coco.yaml) and/or [`allo_coco.yaml`](src/configs/base/allo_coco.yaml)).
+
+Expected layout:
+
+```text
+coco/
+├── annotations/
+│   ├── instances_train2017.json
+│   └── ood_seg_train2017/          # optional; masks may also live at repo root
+├── ood_seg_train2017/*.png         # required by FlowCLAS loaders
+└── train2017/*.jpg
+```
+
+You can override any root on the CLI, for example:
+
+```bash
+--data.init_args.city_root /path/to/cityscapes \
+--data.init_args.coco_root /path/to/coco
+```
+
+### Other benchmarks (preprocessed)
+
+Preprocessed **Fishyscapes**, **Road Anomaly**, and **COCO** (see above) are available on [Google Drive](https://drive.google.com/drive/folders/1snL0FNDnmvEEdFQozC2fjsES3Iamms_n?usp=sharing). After extracting, point the paths in [`cityscapes_coco.yaml`](src/configs/base/cityscapes_coco.yaml):
+
+| Config key | Role |
+| --- | --- |
+| `fishy_root` | Fishyscapes **Lost & Found** split (`images/`, `labels/`) |
+| `roadanomaly_root` | Road Anomaly frames and semantic labels |
+| `smiyc_root` | Segment Me If You Can (AnomalyTrack + ObstacleTrack) |
+
+Expected layouts (as used by this repo):
+
+```text
+fishyscapes/
+├── LostAndFound/
+│   ├── images/*.png
+│   └── labels/*.png
+└── Static/
+    ├── images/*.png
+    └── labels/*.png
+
+RoadAnomaly/
+└── frames/
+    ├── <clip>.jpg
+    └── <clip>.labels/
+        └── labels_semantic.png
+
+smiyc/
+├── dataset_AnomalyTrack/
+│   ├── images/
+│   └── labels_masks/
+└── dataset_ObstacleTrack/
+    ├── images/
+    └── labels_masks/
+```
+
+Evaluation uses `fishy_root` for Fishyscapes (default: `../data/fishyscapes/LostAndFound`), plus `smiyc_root` and `roadanomaly_root` for the other test benchmarks in the Cityscapes training pipeline.
+
+## Weights and checkpoints
+
+Pre-trained backbones, SAM2, and FlowCLAS checkpoints are available on [Google Drive](https://drive.google.com/drive/folders/17JWOVX-5sauN_qdM3QfgXqpRE1FEQvwh?usp=sharing). After downloading, place files under the repo root as follows (paths are relative to `src/` in the configs):
+
+| File | Destination |
+| --- | --- |
+| `rein_dinov2l_allo.pth` | `weights/rein_dinov2l_allo.pth` |
+| `rein_dinov2l_city.pth` | `weights/rein_dinov2l_city.pth` |
+| `sam2.1_hiera_large.pt` | `misc/weights/sam2.1_hiera_large.pt` |
+| `best_allo.ckpt` | `weights/flowclas/best_allo.ckpt` |
+| `best_cityscapes.ckpt` | `weights/flowclas/best_cityscapes.ckpt` |
+
+Training reads `backbone_ckpt` from [`flowclas_allo.yaml`](src/configs/flowclas/flowclas_allo.yaml) / [`flowclas_city.yaml`](src/configs/flowclas/flowclas_city.yaml); inference passes `--ckpt` to a FlowCLAS checkpoint under `weights/flowclas/`.
+
 ## Results
 
-Pre-trained checkpoints and pixel-level metrics on the official test splits:
+Pre-trained checkpoints and pixel-level metrics on the official test splits (checkpoints from [Google Drive](https://drive.google.com/drive/folders/17JWOVX-5sauN_qdM3QfgXqpRE1FEQvwh?usp=sharing)):
 
 | Benchmark | Data config | Model config | Checkpoint | Pixel AP | Pixel FPR95 |
 | --- | --- | --- | --- | ---: | ---: |
-| ALLO | [config](src/configs/base/allo_coco.yaml) | [config](src/configs/flowclas/flowclas_allo.yaml) | [checkpoint](weights/flowclas/best_allo.ckpt) | 88.4 | 6.6 |
-| Fishyscapes | [config](src/configs/base/cityscapes_coco.yaml) | [config](src/configs/flowclas/flowclas_city.yaml) | [checkpoint](weights/flowclas/best_cityscapes.ckpt) | 88.8 | 0.7 |
-| Road Anomaly | [config](src/configs/base/cityscapes_coco.yaml) | [config](src/configs/flowclas/flowclas_city.yaml) | [checkpoint](weights/flowclas/best_cityscapes.ckpt) | 93.0 | 3.3 |
+| ALLO | [config](src/configs/base/allo_coco.yaml) | [config](src/configs/flowclas/flowclas_allo.yaml) | `best_allo.ckpt` | 88.4 | 6.6 |
+| Fishyscapes | [config](src/configs/base/cityscapes_coco.yaml) | [config](src/configs/flowclas/flowclas_city.yaml) | `best_cityscapes.ckpt` | 88.8 | 0.7 |
+| Road Anomaly | [config](src/configs/base/cityscapes_coco.yaml) | [config](src/configs/flowclas/flowclas_city.yaml) | `best_cityscapes.ckpt` | 93.0 | 3.3 |
 
-Fishyscapes and Road Anomaly are evaluated with the same Cityscapes-trained [checkpoint](weights/flowclas/best_cityscapes.ckpt); use the inference commands in [Road Anomaly Segmentation](#road-anomaly-segmentation-fishyscapes--road-anomaly) below.
+Fishyscapes and Road Anomaly are evaluated with the same Cityscapes-trained `best_cityscapes.ckpt`; use the inference commands in [Road Anomaly Segmentation](#road-anomaly-segmentation-fishyscapes--road-anomaly) below.
 
 ## Training
 
@@ -171,7 +280,7 @@ python3 trainer_cli.py test \
 
 ### Examples
 
-Camera-ready checkpoints (same flag set as above):
+Download checkpoints from [Google Drive](https://drive.google.com/drive/folders/17JWOVX-5sauN_qdM3QfgXqpRE1FEQvwh?usp=sharing) first (see [Weights and checkpoints](#weights-and-checkpoints)). Example inference commands (same flag set as above):
 
 **ALLO**
 
