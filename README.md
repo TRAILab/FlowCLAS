@@ -1,4 +1,4 @@
-# [WACV 2026] FlowCLAS: Enhancing Normalizing Flow Via Contrastive Learning For Anomaly Segmentation
+# [WACV 2026] FlowCLAS: Enhancing Normalizing Flow-Based Anomaly Segmentation Via Contrastive Learning
 
 Official repository for FlowCLAS.
 
